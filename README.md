@@ -13,7 +13,7 @@ I made this AI data analytics tool mostly for fun, but also to understand more a
 
 ## Installation
 1. Clone the repository:
-``
+```
 git clone https://github.com/WoutHofstra/dataDuck
 ```
 2. Move into the projects directory:
