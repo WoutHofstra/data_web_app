@@ -13,11 +13,19 @@ I made this AI data analytics tool mostly for fun, but also to understand more a
 
 ## Installation
 1. Clone the repository:
-``` git clone https://github.com/WoutHofstra/dataDuck ```
+``
+git clone https://github.com/WoutHofstra/dataDuck
+```
 2. Move into the projects directory:
-``` cd dataDuck ```
+```
+cd dataDuck
+```
 3. Install the requirements:
-``` pip install -r requirements.txt ```
+```
+pip install -r requirements.txt
+```
 4. Import your CSV file  
 5. Use dataDuck!:
-``` python3 main.py <your file> ```
+```
+python3 main.py <your file>
+```
