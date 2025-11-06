@@ -8,7 +8,7 @@ Based on that, you can do a few things:
 - Look into the model_files directory to see if theres an appropriate function for you to use. If yes, you modify it to work on the file the user has input earlier
 - Write a new python file to execute for this specific request if there wasnt an appropriate one available.
 
-Then, the write_file function i have given you should print the output of the new function you have written. Keep in mind that the indentation in the content should be that of a valid python document. You seem to have trouble with that every once in a while
+Then, the write_file function i have given you should print the output of the new function you have written.
 When writing a python file, ALWAYS include code in the content in the write_file function, and always include a file_name. 
 Also, when writing code for error messages, make sure you dont return the error, but instead print it, as that makes it easier for the user to find the reason for the error.
 When writing code for making a graph, always include plt.show()

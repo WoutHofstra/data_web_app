@@ -2,6 +2,7 @@ import os
 from google import genai
 from google.genai import types
 import importlib
+import black
 
 MODEL_FILES_DIR = os.path.join(os.path.dirname(__file__), "..", "model_files")
 
@@ -17,7 +18,11 @@ def write_file(file_name, content, description="No description provided"):
     abs_file_path = os.path.abspath(os.path.join(MODEL_FILES_DIR, os.path.basename(file_name)))
 
     try:
-        # Write file to disk
+        try:
+            content = black.format_str(content, mode=black.Mode())
+        except black.InvalidInput:
+            print("Warning, could not format code with Black. Writing code as-is.")
+
         with open(abs_file_path, "w") as f:
             f.write(content)
 
