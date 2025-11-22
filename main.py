@@ -22,13 +22,14 @@ for module_info in pkgutil.iter_modules(model_files.__path__):
 		loaded_functions[name] = obj
 		globals()[name] = obj
 
-
+# Load API key
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
 if not api_key:
 	raise ValueError("No GEMINI_API_KEY in your .env file")
 client = genai.Client(api_key=api_key)
 
+# Read system prompt from prompt.txt
 with open("prompt.txt", "r", encoding="utf-8") as f:
 	system_prompt = f.read()
 
@@ -43,6 +44,7 @@ if len(sys.argv) > 2:
 
 user_input = sys.argv[1]
 
+# Receive CSV file from user, and start conversation
 if user_input.lower().endswith(".csv") and os.path.exists(user_input):
 	try:
 		df = pd.read_csv(user_input)
@@ -64,6 +66,7 @@ available_functions = types.Tool(
 	function_declarations=load_function_schemas()
 )
 
+# main loop
 def generate_response():
 	try:
 		response = client.models.generate_content(
