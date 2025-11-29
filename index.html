@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Data Analysis Project</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    #aiImage {
+      max-width: 100%;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Data Analysis Agent</h1>
+
+  <form id="analysis-form">
+    <label>Upload CSV:</label><br />
+    <input type="file" id="csvInput" accept=".csv" /><br /><br />
+
+    <label>Instructions:</label><br />
+    <textarea id="instructions" rows="6" cols="50"></textarea><br /><br />
+
+    <button type="button" id="sendBtn">Run Analysis</button>
+  </form>
+
+  <hr />
+
+  <h2>Output</h2>
+  <img id="aiImage" alt="AI-generated plot" />
+
+  <script>
+    "use strict";
+
+    const sendBtn = document.getElementById("sendBtn");
+
+    sendBtn.addEventListener("click", async function() {
+      const input = document.getElementById("csvInput");
+      const instructionsInput = document.getElementById("instructions");
+      const aiImage = document.getElementById("aiImage");
+
+      if (!input.files || input.files.length === 0) {
+        alert("Please select a CSV file!");
+        return;
+      }
+
+      const csvFile = input.files[0];
+      const instructions = instructionsInput.value.trim();
+
+      if (!instructions) {
+        alert("Please enter instructions!");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", csvFile);
+      formData.append("instructions", instructions);
+
+      try {
+        const res = await fetch("http://127.0.0.1:5000/analyze", {
+          method: "POST",
+          body: formData
+        });
+
+        if (!res.ok) {
+          throw new Error(`Server returned ${res.status}`);
+        }
+
+        let text = await res.text();
+        text = text.replace(/^"(.*)"$/, "$1"); // remove quotes if present
+
+        if (text.startsWith("iVBOR")) {
+          aiImage.src = "data:image/png;base64," + text;
+          aiImage.style.display = "block";
+        } else {
+          aiImage.style.display = "none";
+        }
+
+      } catch (err) {
+        console.error("Error sending file:", err);
+        aiImage.style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>

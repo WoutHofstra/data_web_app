@@ -1,74 +1,71 @@
 import os
-from google import genai
-from google.genai import types
 import importlib
 import black
+import base64
 
 MODEL_FILES_DIR = os.path.join(os.path.dirname(__file__), "..", "model_files")
 
-def write_file(file_name, content, description="No description provided"):
-    print("write file function triggered")
+def write_file(content):
     """
-    Write a file into the /model_files folder
+    Saves Python code from params['content'] to a file and executes it.
+    Expects params dict with keys:
+        - file_name: str
+        - content: str
     """
-    # Ensure the target directory exists
-    os.makedirs(MODEL_FILES_DIR, exist_ok=True)
+    print("write_file function triggered")
+    file_name = "main.py"
 
-    # Construct the absolute path safely
+    nice_content = strip_backticks(content)
+
+    os.makedirs(MODEL_FILES_DIR, exist_ok=True)
     abs_file_path = os.path.abspath(os.path.join(MODEL_FILES_DIR, os.path.basename(file_name)))
 
     try:
         try:
-            content = black.format_str(content, mode=black.Mode())
+            nice_content = black.format_str(nice_content, mode=black.Mode())
+            print("Formatted code successfully")
         except black.InvalidInput:
-            print("Warning, could not format code with Black. Writing code as-is.")
+            print("Warning: Could not format code with Black. Writing as-is.")
 
         with open(abs_file_path, "w") as f:
-            f.write(content)
+            f.write(nice_content)
+        print(f"File saved: {abs_file_path}")
 
-        print("successfully write to ", file_name)
+        if abs_file_path.endswith(".py"):
+            module_name = os.path.splitext(os.path.basename(file_name))[0]
+            spec = importlib.util.spec_from_file_location(module_name, abs_file_path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
 
-        module_name = os.path.splitext(os.path.basename(file_name))[0]
-        spec = importlib.util.spec_from_file_location(module_name, abs_file_path)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
+            func = getattr(module, "main", None)
+            if callable(func):
+                print("Running main() function")
+                result = func()
+                return result if result is not None else "main() returned None"
 
-        func = getattr(module, "main", None)
-        if callable(func):
-            print("Running function:", func)
-            result = func()
-            print("Output: ", result)
-        else:
             for attr_name in dir(module):
                 attr = getattr(module, attr_name)
-                if callable(attr) and not attr_name.startswith("__"):
-                    print("Running first found callable function: ", attr_name)
+                if callable(attr) and attr_name.startswith("create"):
+                    print(f"Running function: {attr_name}")
                     result = attr()
-                    print("Output: ", result)
-                    break
+                    return result if result is not None else f"{attr_name} returned None"
 
-        return f"✅ Successfully wrote and executed'{file_name}' "
+            return "Error: No callable functions found in module"
 
+        else:
+            return f"File saved: {abs_file_path} (not a Python file, execution skipped)"
 
     except Exception as e:
         return f"Error: {str(e)}"
+    
 
+def strip_backticks(code: str):
 
-schema_write_file = {
-    "name": "write_file",
-    "description": "Writes or overwrites content to a file.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "file_name": {
-                "type": "string",
-                "description": "The path to the file to write to.",
-            },
-            "content": {
-                "type": "string",
-                "description": "The content to write to the file.",
-            },
-        },
-        "required": ["file_name", "content"],
-    },
-}
+    new_lines = []
+    lines = code.splitlines()
+
+    for line in lines:
+        if not line.startswith("```"):
+            new_lines.append(line)
+
+    return "\n".join(new_lines)
