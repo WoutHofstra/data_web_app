@@ -1,31 +1,27 @@
-# dataDuck
+# data web app
 
-![dataDuck image](dataduck.png)
 An AI tool made specifically for data analysis!
-
-I made this AI data analytics tool mostly for fun, but also to understand more about data analytics and AI agent implementations. 
+Click here to see a quick video demonstration: ([Click Here!!!](https://youtu.be/2nRurJxFfO4))
 
 ## Features
-1. It can receive any CSV file, and will await instructions on what to do with it.  
+1. It can receive any CSV file, including instructions on what to do with it.  
 2. It can write and run any Python script, using various libraries like Pandas and matplotlib.  
-3. All AI-written files are automatically formatted, so AI can not make any syntactical mistakes.  
+3. All AI-written files are automatically formatted, so AI can not make any syntactical mistakes.
+4. It can generate any plot, which is sent to the frontend  
 
 
 ## Installation
 1. Clone the repository:
 ```
-git clone https://github.com/WoutHofstra/dataDuck
+git clone https://github.com/WoutHofstra/data_web_app
 ```
 2. Move into the projects directory:
 ```
-cd dataDuck
+cd data_web_app
 ```
 3. Install the requirements:
 ```
 pip install -r requirements.txt
 ```
 4. Import your CSV file  
-5. Use dataDuck!:
-```
-python3 main.py <your file>
-```
+5. Use my app!:
