@@ -67,7 +67,7 @@
         }
 
         let text = await res.text();
-        text = text.replace(/^"(.*)"$/, "$1"); // remove quotes if present
+        text = text.replace(/^"(.*)"$/, "$1");
 
         if (text.startsWith("iVBOR")) {
           aiImage.src = "data:image/png;base64," + text;
